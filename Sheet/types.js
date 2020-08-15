@@ -1,0 +1,27 @@
+const types = [
+  'Enere',
+  'Toere',
+  'Treere',
+  'Firere',
+  'Femmere',
+  'Seksere',
+  'Sum',
+  'Bonus',
+  '1 par',
+  '2 par',
+  '3 par',
+  '3 like',
+  '4 like',
+  '5 like',
+  'Liten straight',
+  'Stor straight',
+  'Full straight',
+  'Hytte (2+3 like)',
+  'Hus (3+3 like)',
+  'Tårn (2+4 like)',
+  'Sjanse',
+  'Maxiyatzy',
+  'Totalsum',
+];
+
+export default types;
