@@ -7,15 +7,47 @@ import Col from './Col.js';
 const numCols = 8;
 
 export default class Row extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.lockedRows = [6, 7, 22];
+
+    this.state = {
+      writable: !this.lockedRows.includes(props.rowIndex),
+    };
+  }
+
   renderCols() {
-    const {main, bold, heading} = this.props;
+    const {writable} = this.state;
+    const {main, bold, heading, updateValues, rowIndex} = this.props;
     const cols = [];
     let key = 0;
 
-    cols.push(<Col key={key++} heading={heading} bold={bold} main={main} />);
+    cols.push(
+      <Col
+        updateValues={updateValues}
+        key={key++}
+        heading={heading}
+        bold={bold}
+        main={main}
+        writable={writable}
+        rowIndex={rowIndex}
+        colIndex={-1}
+      />,
+    );
 
     for (let i = 0; i < numCols - 1; i++) {
-      cols.push(<Col key={key++} heading="" numerical={!main} />);
+      cols.push(
+        <Col
+          updateValues={updateValues}
+          key={key++}
+          heading=""
+          numerical={!main}
+          writable={writable}
+          rowIndex={rowIndex}
+          colIndex={i}
+        />,
+      );
     }
 
     return cols;
