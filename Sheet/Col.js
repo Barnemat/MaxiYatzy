@@ -1,13 +1,6 @@
 import React from 'react';
 
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-} from 'react-native';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {StyleSheet, View, Text, TextInput} from 'react-native';
 
 export default class Col extends React.Component {
   constructor(props) {
@@ -19,15 +12,29 @@ export default class Col extends React.Component {
   }
 
   handleInput(value) {
-    const intValue = parseInt(value);
-    if (value === '-' || (intValue >= 0 && intValue <= 100)) {
-      // TODO Funksjon for sending av verdi til array ('-' skal tolkes som 0)
-      this.setState({ value: value === '0' ? '-' : value });
+    const {updateValues, rowIndex, colIndex, numerical} = this.props;
+
+    if (!numerical) {
+      this.setState({value});
+      return;
+    }
+
+    if (value === '') {
+      updateValues(rowIndex, colIndex, -1);
+      this.setState({value});
+      return;
+    }
+
+    const intValue = value !== '-' ? parseInt(value, 10) : 0;
+
+    if (intValue >= 0 && intValue <= 100) {
+      updateValues(rowIndex, colIndex, intValue);
+      this.setState({value: value === '0' ? '-' : value});
     }
   }
 
   render() {
-    const {empty, main, bold, heading, numerical} = this.props;
+    const {empty, main, bold, heading, writable, numerical} = this.props;
     const {value} = this.state;
 
     return (
@@ -43,7 +50,7 @@ export default class Col extends React.Component {
           <TextInput
             style={[styles.textField, styles.bold]}
             onChangeText={(val) => this.handleInput(val)}
-            value={value}
+            value={!writable && this.props.value ? this.props.value : value}
             autoCorrect={false}
             contextMenuHidden={true}
             allowFontScaling={false}
@@ -51,6 +58,7 @@ export default class Col extends React.Component {
             keyboardType={numerical ? 'number-pad' : 'default'}
             autoCapitalize="characters"
             textAlign="center"
+            editable={writable}
           />
         )}
       </View>
