@@ -138,9 +138,6 @@ export default class Sheet extends React.Component {
 
   render() {
     const {values} = this.state;
-    console.log('update');
-    this.state.values.forEach((value) => console.log(value));
-    console.log(this.getActiveCols());
     return <View style={styles.sheet}>{this.renderRows(values)}</View>;
   }
 }
