@@ -17,6 +17,14 @@ export default class Row extends React.Component {
     };
   }
 
+  getValue(col) {
+    const {values, rowIndex} = this.props;
+
+    if (this.lockedRows.includes(rowIndex) && values[rowIndex][col] > -1) {
+      return values[rowIndex][col].toString();
+    }
+  }
+
   renderCols() {
     const {writable} = this.state;
     const {main, bold, heading, updateValues, rowIndex} = this.props;
@@ -46,6 +54,7 @@ export default class Row extends React.Component {
           writable={writable}
           rowIndex={rowIndex}
           colIndex={i}
+          value={this.getValue(i)}
         />,
       );
     }

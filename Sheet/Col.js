@@ -12,7 +12,12 @@ export default class Col extends React.Component {
   }
 
   handleInput(value) {
-    const {updateValues, rowIndex, colIndex} = this.props;
+    const {updateValues, rowIndex, colIndex, numerical} = this.props;
+
+    if (!numerical) {
+      this.setState({value});
+      return;
+    }
 
     if (value === '') {
       updateValues(rowIndex, colIndex, -1);
@@ -29,7 +34,7 @@ export default class Col extends React.Component {
   }
 
   render() {
-    const {empty, main, bold, heading, numerical, writable} = this.props;
+    const {empty, main, bold, heading, writable, numerical} = this.props;
     const {value} = this.state;
 
     return (
@@ -45,7 +50,7 @@ export default class Col extends React.Component {
           <TextInput
             style={[styles.textField, styles.bold]}
             onChangeText={(val) => this.handleInput(val)}
-            value={value}
+            value={!writable && this.props.value ? this.props.value : value}
             autoCorrect={false}
             contextMenuHidden={true}
             allowFontScaling={false}

@@ -5,20 +5,27 @@ import {StyleSheet, View} from 'react-native';
 import Row from './Row.js';
 import types from './types.js';
 
+const getInitValues = () => {
+  const values = [];
+
+  types.forEach(() => {
+    const cols = [];
+
+    for (let i = 0; i < 7; i++) {
+      cols.push(-1);
+    }
+
+    values.push(cols);
+  });
+
+  return values;
+};
+
 export default class Sheet extends React.Component {
   constructor(props) {
     super(props);
 
-    const values = [];
-    types.forEach(() => {
-      const cols = [];
-
-      for (let i = 0; i < 7; i++) {
-        cols.push(-1);
-      }
-
-      values.push(cols);
-    });
+    const values = getInitValues();
 
     this.state = {
       values,
@@ -27,8 +34,9 @@ export default class Sheet extends React.Component {
     this.updateValues = this.updateValues.bind(this);
   }
 
-  renderRows() {
+  renderRows(values) {
     let key = 0;
+
     const elements = [
       <Row
         updateValues={this.updateValues}
@@ -47,6 +55,7 @@ export default class Sheet extends React.Component {
           heading={type}
           bold={key === elements.length - 1}
           rowIndex={key - 2}
+          values={values}
         />,
       );
     });
@@ -79,13 +88,14 @@ export default class Sheet extends React.Component {
     const {values} = this.state;
     values[row][col] = value;
 
-    this.checkFirstSum(values);
-    this.setState(values);
-  }
-
-  checkFirstSum(values) {
     const activeCols = this.getActiveCols();
 
+    this.checkFirstSum(values, activeCols);
+    this.checkTotalSum(values, activeCols);
+    this.setState({values});
+  }
+
+  checkFirstSum(values, activeCols) {
     activeCols.forEach((colIndex) => {
       let sum = 0;
       let broken = false;
@@ -106,13 +116,32 @@ export default class Sheet extends React.Component {
     });
   }
 
-  checkIsDone() {}
+  checkTotalSum(values, activeCols) {
+    activeCols.forEach((colIndex) => {
+      let sum = 0;
+      let broken = false;
+
+      for (let i = 6; i < 22; i++) {
+        if (values[i][colIndex] !== -1) {
+          sum += values[i][colIndex];
+        } else {
+          broken = true;
+          break;
+        }
+      }
+
+      if (!broken) {
+        values[22][colIndex] = sum;
+      }
+    });
+  }
 
   render() {
+    const {values} = this.state;
     console.log('update');
     this.state.values.forEach((value) => console.log(value));
     console.log(this.getActiveCols());
-    return <View style={styles.sheet}>{this.renderRows()}</View>;
+    return <View style={styles.sheet}>{this.renderRows(values)}</View>;
   }
 }
 
